@@ -14,6 +14,23 @@ cache:
 
 script: "./gradlew clean build"
 
+before_deploy:
+  - zip -r charmingk-springboot-board *
+  - mkdir -p deploy
+  - mv charmingk-springboot-board.zip deploy/charmingk-springboot-board.zip
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+
+    bucket: charmingk-springboot-board
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: private
+    local_dir: deploy
+    wait-until-deployed: true
+
 # CI 실행 완료 시 메일로 알람
 notifications:
   email:
